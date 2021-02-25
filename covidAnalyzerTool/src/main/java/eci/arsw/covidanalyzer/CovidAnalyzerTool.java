@@ -36,12 +36,17 @@ public class CovidAnalyzerTool {
         amountOfFilesProcessed.set(0);
         List<File> resultFiles = getResultFileList();
         amountOfFilesTotal = resultFiles.size();
-        for (File resultFile : resultFiles) {
-            List<Result> results = testReader.readResultsFromFile(resultFile);
-            for (Result result : results) {
-                resultAnalyzer.addResult(result);
+        for (int i = 0; i < NUMBER_OF_THREADS; i++) {
+            threads.add(new CovidAnalyzerTool(testReader,resultAnalyzer,amountOfFilesProcessed),resultFiles);
+
+        }
+        threads.forEach(Thread::start);
+        try {
+            for (CovidAnalyzerTool t : threads) {
+                t.join();
             }
-            amountOfFilesProcessed.incrementAndGet();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -81,7 +86,6 @@ public class CovidAnalyzerTool {
                 break;
 
         }
-        //Thread trasactionResulConvid = new Thread(covidAnalyzerTool::processResultData);
         Thread processingThread = new Thread(() -> covidAnalyzerTool.processResultData());
         processingThread.start();
         processingThread.join();
