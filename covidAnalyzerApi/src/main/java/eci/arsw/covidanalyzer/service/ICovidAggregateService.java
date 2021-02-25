@@ -3,6 +3,7 @@ package eci.arsw.covidanalyzer.service;
 import eci.arsw.covidanalyzer.model.Result;
 import eci.arsw.covidanalyzer.model.ResultType;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public interface ICovidAggregateService {
@@ -32,5 +33,7 @@ public interface ICovidAggregateService {
      */
     void upsertPersonWithMultipleTests(UUID id, ResultType type);
 
+    String getResultJson(Result result);
 
+    String getResultJson(Boolean results);
 }
